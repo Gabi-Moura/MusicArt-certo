@@ -1,30 +1,46 @@
 <?php
-require_once __DIR__ . '/../app/config/conexao.php';
+require_once "app/config/conexao.php";
 
-class Usuario{
-    public function listar(){
-        global $pdo;
-        return $pdo->query("SELECT * FROM usuarios")->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function criar($nome, $email){
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nome,email) VALUES (?,?)");
-        return $stmt ->execute([$nome, $email]);
-    }
-    public function buscar($id){
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id=?");
-        $stmt->execute([$id]);
-        return $stmt-> fetch(PDO::FETCH_ASSOC);
-    }
-    public function atualizar($id,$nome,$email){
-        global $pdo;
-        $stmt = $pdo->prepare("UPDATE usuarios SET nome=?, email=? WHERE id=?");
-        return $stmt->execute([$nome, $email, $id]);
-    }
-    public function excluir($id){
-        global $pdo;
-        $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id=?");
-        return $stmt->execute([$id]);
-    }
+function listarUsuarios() {
+    $con = conectar();
+    $sql = "SELECT * FROM usuario";
+    $resultado =mysqli_query($con, $sql);
+
+    return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+}
+
+function inserirUsuario($nome, $email, $imagem, $login, $senha, $papel) {
+    $con = conectar();
+    //id está em auto increment
+    $sql = "INSERT INTO usuario(nome, email, imagem, login, senha, papel) VALUES ('$nome', '$email', '$imagem', '$login', '$senha', '$papel')";
+
+    mysqli_query($con, $sql);
+}
+
+function buscarUsuario($id) {
+    $con = conectar();
+    $sql = "SELECT*FROM usuario WHERE id=$id";
+    $resultado = mysqli_query($con, $sql);
+
+    return mysqli_fetch_assoc($resultado);
+}
+       
+function atualizarUsuario($id, $nome, $email, $imagem, $login, $senha, $papel) {
+    $con = conectar();
+    $sql = "UPDATE usuario SET nome='$nome', email='$email', imagem='$imagem', login='$login', senha='$senha', papel='$papel' WHERE id=$id";
+    mysqli_query($con, $sql);
+}
+//adicionar um login, id, senha FROM usuario WHERE login=$login e senha=$senha
+function excluirUsuario($id) {
+    $con = conectar();
+    $sql="DELETE FROM usuario WHERE id=$id";
+    
+    mysqli_query($con, $sql);
+}
+
+function login_adm($login, $senha) {
+    $con = conectar();
+    $sql = "SELECT id, nome, login, senha, imagem FROM usuario WHERE login='$login' AND senha='$senha'";
+    $resultado = mysqli_query($con, $sql);
+    return mysqli_fetch_assoc($resultado);
 }

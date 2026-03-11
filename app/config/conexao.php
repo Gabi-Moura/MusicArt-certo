@@ -1,2 +1,4 @@
 <?php
-$pdo = new PDO("mysql:host=localhost;dbname=crud_mvc", "root", "");
+function conectar(){
+    return mysqli_connect("localhost","root","","bd_loja_mvc");
+}

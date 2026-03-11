@@ -1,30 +1,37 @@
 <?php
-require_once __DIR__ . '/../app/config/conexao.php';
+require_once "app/config/conexao.php";
 
-class Produto{
-    public function listar_p(){
-        global $pdo;
-        return $pdo->query("SELECT * FROM produtos")->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function criar_p($nome, $preco){
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO produtos (nome,preco) VALUES (?,?)");
-        return $stmt ->execute([$nome, $preco]);
-    }
-    public function buscar_p($id){
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id_produtos=?");
-        $stmt->execute([$id]);
-        return $stmt-> fetch(PDO::FETCH_ASSOC);
-    }
-    public function atualizar_p($id,$nome,$preco){
-        global $pdo;
-        $stmt = $pdo->prepare("UPDATE produtos SET nome=?, preco=? WHERE id_produtos=?");
-        return $stmt->execute([$nome, $preco, $id]);
-    }
-    public function excluir_p($id){
-        global $pdo;
-        $stmt = $pdo->prepare("DELETE FROM produtos WHERE id_produtos=?");
-        return $stmt->execute([$id]);
-    }
+function listarProduto() {
+    $con = conectar();
+    $sql = "SELECT * FROM produto";
+    $resultadoP =mysqli_query($con, $sql);
+
+    return mysqli_fetch_all($resultadoP, MYSQLI_ASSOC);
+}
+
+function inserirProduto($nomeP, $descricao, $fornecedor, $quantidade, $fabricante, $preco, $margem, $data_cadastro, $status_pro, $imagemP) {
+    $con = conectar();
+    $sql = "INSERT INTO produto(nomeP, descricao, fornecedor, quantidade, fabricante, preco, margem, data_cadastro, status_pro, imagemP) VALUES ('$nomeP', '$descricao', '$fornecedor', '$quantidade', '$fabricante', '$preco', '$margem', '$data_cadastro', '$status_pro', '$imagemP')";
+    mysqli_query($con, $sql);
+}
+
+function buscarProduto($id_produto) {
+    $con = conectar();
+    $sql = "SELECT*FROM produto WHERE id_produto=$id_produto";
+    $resultadoP = mysqli_query($con, $sql);
+
+    return mysqli_fetch_assoc($resultadoP);
+}
+       
+function atualizarProduto($nomeP, $descricao, $fornecedor, $quantidade, $fabricante, $preco, $margem, $data_cadastro, $status_pro, $imagemP, $id_produto) {
+    $con = conectar();
+    $sql = "UPDATE produto SET nomeP='$nomeP', descricao='$descricao', fornecedor='$fornecedor', quantidade='$quantidade', fabricante='$fabricante',  preco='$preco', margem='$margem', data_cadastro='$data_cadastro', status_pro='$status_pro', imagemP='$imagemP' WHERE id_produto=$id_produto";
+    mysqli_query($con, $sql);
+}
+//adicionar um login, id, senha FROM usuario WHERE login=$login e senha=$senha
+function excluirProduto($id_produto) {
+    $con = conectar();
+    $sql="DELETE FROM produto WHERE id_produto=$id_produto";
+    
+    mysqli_query($con, $sql);
 }
